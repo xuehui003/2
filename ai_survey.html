@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI大模型在财务场景中的应用 - 课程调查问卷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .survey-content {
+            padding: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #4a5568;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: #f7fafc;
+            border-color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .open-ended {
+            margin-top: 30px;
+        }
+
+        .open-ended textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .open-ended textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .export-btn,
+        .submit-btn,
+        .stats-btn {
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 10px;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .stats-btn {
+            background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .export-btn:hover,
+        .submit-btn:hover,
+        .stats-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .export-btn:disabled,
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 统计结果样式 */
+        .stats-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stats-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+
+        .stats-header h2 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .stats-item {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .stats-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .stats-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stats-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-bar-container {
+            flex: 1;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .stats-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.5s ease;
+        }
+
+        .stats-count {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: transparent;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .validation-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .question.invalid .validation-message {
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .survey-content {
+                padding: 20px;
+            }
+
+            .question {
+                padding: 15px;
+            }
+
+            .export-btn {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .question:nth-child(2) { animation-delay: 0.1s; }
+        .question:nth-child(3) { animation-delay: 0.2s; }
+        .question:nth-child(4) { animation-delay: 0.3s; }
+        .question:nth-child(5) { animation-delay: 0.4s; }
+        .question:nth-child(6) { animation-delay: 0.5s; }
+        .question:nth-child(7) { animation-delay: 0.6s; }
+        .question:nth-child(8) { animation-delay: 0.7s; }
+        .question:nth-child(9) { animation-delay: 0.8s; }
+        .question:nth-child(10) { animation-delay: 0.9s; }
+        .question:nth-child(11) { animation-delay: 1s; }
+        .question:nth-child(12) { animation-delay: 1.1s; }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>学生AI技术应用情况调查</h1>
+            <p>AI大模型使用频率与掌握程度分析</p>
+        </div>
+
+        <div class="survey-content">
+            <h2 class="section-title">请填写以下问题，帮助我们了解您对AI技术和大模型的使用情况和掌握程度</h2>
+
+            <form id="surveyForm">
+                <!-- 个人信息 -->
+                <div class="question" data-question="0">
+                    <div class="question-number">基本信息</div>
+                    <div class="question-text">请填写以下个人信息</div>
+                    <div class="options">
+                        <div class="option" style="flex-direction: column; align-items: flex-start; padding: 15px;">
+                            <label for="studentName" style="margin-bottom: 5px; font-weight: bold;">姓名：</label>
+                            <input type="text" id="studentName" placeholder="请输入您的姓名" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                        </div>
+                        <div class="option" style="flex-direction: column; align-items: flex-start; padding: 15px;">
+                            <label for="studentId" style="margin-bottom: 5px; font-weight: bold;">学号：</label>
+                            <input type="text" id="studentId" placeholder="请输入您的学号" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                        </div>
+                    </div>
+                    <div class="validation-message">请填写姓名和学号</div>
+                </div>
+
+                <!-- 问题1 -->
+                <div class="question" data-question="1">
+                    <div class="question-number">问题 1/11</div>
+                    <div class="question-text">您是否听说过AI大语言模型？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q1-a" name="q1" value="从未听说过">
+                            <label for="q1-a">从未听说过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-b" name="q1" value="听说过但不了解">
+                            <label for="q1-b">听说过但不了解</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-c" name="q1" value="了解基本概念">
+                            <label for="q1-c">了解基本概念</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q1-d" name="q1" value="有一定了解">
+                            <label for="q1-d">有一定了解</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题2 -->
+                <div class="question" data-question="2">
+                    <div class="question-number">问题 2/11</div>
+                    <div class="question-text">您曾经使用过哪些AI大语言模型工具？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q2-a" name="q2" value="ChatGPT/GPT系列">
+                            <label for="q2-a">ChatGPT/GPT系列</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-b" name="q2" value="文心一言">
+                            <label for="q2-b">文心一言</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-c" name="q2" value="通义千问">
+                            <label for="q2-c">通义千问</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-d" name="q2" value="豆包/讯飞星火等国产模型">
+                            <label for="q2-d">豆包/讯飞星火等国产模型</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-e" name="q2" value="多种工具都使用过">
+                            <label for="q2-e">多种工具都使用过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q2-f" name="q2" value="从未使用过">
+                            <label for="q2-f">从未使用过</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题3 -->
+                <div class="question" data-question="3">
+                    <div class="question-number">问题 3/11</div>
+                    <div class="question-text">您使用AI大语言模型的频率如何？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q3-a" name="q3" value="几乎每天使用">
+                            <label for="q3-a">几乎每天使用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-b" name="q3" value="每周使用几次">
+                            <label for="q3-b">每周使用几次</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-c" name="q3" value="每月使用几次">
+                            <label for="q3-c">每月使用几次</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-d" name="q3" value="偶尔尝试过">
+                            <label for="q3-d">偶尔尝试过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q3-e" name="q3" value="从未使用过">
+                            <label for="q3-e">从未使用过</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题4 -->
+                <div class="question" data-question="4">
+                    <div class="question-number">问题 4/11</div>
+                    <div class="question-text">您使用AI工具主要用于哪些方面？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q4-a" name="q4" value="学习辅助和知识查询">
+                            <label for="q4-a">学习辅助和知识查询</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-b" name="q4" value="作业和论文写作">
+                            <label for="q4-b">作业和论文写作</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-c" name="q4" value="代码编写和调试">
+                            <label for="q4-c">代码编写和调试</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-d" name="q4" value="日常聊天和娱乐">
+                            <label for="q4-d">日常聊天和娱乐</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q4-e" name="q4" value="多种用途">
+                            <label for="q4-e">多种用途</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题5 -->
+                <div class="question" data-question="5">
+                    <div class="question-number">问题 5/11</div>
+                    <div class="question-text">您是否使用过AI工具生成或辅助创作过以下内容？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q5-a" name="q5" value="文本内容（文章、故事等）">
+                            <label for="q5-a">文本内容（文章、故事等）</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-b" name="q5" value="图片或图像">
+                            <label for="q5-b">图片或图像</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-c" name="q5" value="表格或数据分析">
+                            <label for="q5-c">表格或数据分析</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-d" name="q5" value="代码或程序">
+                            <label for="q5-d">代码或程序</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-e" name="q5" value="视频或动画">
+                            <label for="q5-e">视频或动画</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-f" name="q5" value="多种类型都尝试过">
+                            <label for="q5-f">多种类型都尝试过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q5-g" name="q5" value="从未使用AI创作过">
+                            <label for="q5-g">从未使用AI创作过</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题6 -->
+                <div class="question" data-question="6">
+                    <div class="question-number">问题 6/11</div>
+                    <div class="question-text">在使用AI工具生成图片时，您使用过哪些工具？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q6-a" name="q6" value="Midjourney">
+                            <label for="q6-a">Midjourney</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-b" name="q6" value="DALL-E">
+                            <label for="q6-b">DALL-E</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-c" name="q6" value="Stable Diffusion">
+                            <label for="q6-c">Stable Diffusion</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-d" name="q6" value="文心一格/通义万相">
+                            <label for="q6-d">文心一格/通义万相</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-e" name="q6" value="其他AI绘图工具">
+                            <label for="q6-e">其他AI绘图工具</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q6-f" name="q6" value="从未使用AI生成过图片">
+                            <label for="q6-f">从未使用AI生成过图片</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题7 -->
+                <div class="question" data-question="7">
+                    <div class="question-number">问题 7/11</div>
+                    <div class="question-text">您是否使用过AI工具辅助制作过表格或处理数据？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q7-a" name="q7" value="经常使用">
+                            <label for="q7-a">经常使用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-b" name="q7" value="偶尔使用">
+                            <label for="q7-b">偶尔使用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-c" name="q7" value="尝试过但不常用">
+                            <label for="q7-c">尝试过但不常用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-d" name="q7" value="听说过但没用过">
+                            <label for="q7-d">听说过但没用过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q7-e" name="q7" value="从未听说过">
+                            <label for="q7-e">从未听说过</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题8 -->
+                <div class="question" data-question="8">
+                    <div class="question-number">问题 8/11</div>
+                    <div class="question-text">您是否使用过AI工具生成或辅助制作过视频/动画？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q8-a" name="q8" value="经常使用">
+                            <label for="q8-a">经常使用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-b" name="q8" value="偶尔使用">
+                            <label for="q8-b">偶尔使用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-c" name="q8" value="尝试过但不常用">
+                            <label for="q8-c">尝试过但不常用</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-d" name="q8" value="听说过但没用过">
+                            <label for="q8-d">听说过但没用过</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q8-e" name="q8" value="从未听说过">
+                            <label for="q8-e">从未听说过</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+                <!-- 问题9 -->
+                <div class="question" data-question="9">
+                    <div class="question-number">问题 9/11</div>
+                    <div class="question-text">您对自己使用AI工具的熟练程度如何评价？</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q9-a" name="q9" value="非常熟练">
+                            <label for="q9-a">非常熟练</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-b" name="q9" value="比较熟练">
+                            <label for="q9-b">比较熟练</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-c" name="q9" value="一般">
+                            <label for="q9-c">一般</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-d" name="q9" value="不太熟练">
+                            <label for="q9-d">不太熟练</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q9-e" name="q9" value="完全不会使用">
+                            <label for="q9-e">完全不会使用</label>
+                        </div>
+                    </div>
+                    <div class="validation-message">请选择一个选项</div>
+                </div>
+
+
+
+                <!-- 开放型问题 -->
+                <div class="question open-ended" data-question="10">
+                    <div class="question-number">问题 10/11</div>
+                    <div class="question-text">您在学习或生活中使用AI大模型时遇到过哪些困难或挑战？</div>
+                    <textarea id="openQuestion" placeholder="请分享您的使用体验和遇到的问题..."></textarea>
+                    <div class="validation-message">请填写您的回答</div>
+                </div>
+            </form>
+        </div>
+
+        <div class="submit-section">
+            <button type="button" id="submitBtn" class="submit-btn" disabled>提交问卷</button>
+            <button type="button" id="exportBtn" class="export-btn" disabled>导出问卷</button>
+            <button type="button" id="statsBtn" class="stats-btn">查看统计</button>
+        </div>
+
+        <!-- 统计结果模态框 -->
+        <div id="statsModal" class="stats-modal">
+            <div class="stats-content">
+                <div class="stats-header">
+                    <h2>问卷统计结果</h2>
+                    <button id="closeStatsBtn" class="close-btn">&times;</button>
+                </div>
+                <div id="statsData">
+                    <!-- 统计数据将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SheetJS库（简化版）用于生成Excel
+        function SheetJSExport(data, filename) {
+            const csv = data.map(row => row.join(',')).join('\n');
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 检查表单是否完整填写
+        function checkFormComplete() {
+            let isComplete = true;
+            
+            // 检查个人信息
+            const studentName = document.getElementById('studentName');
+            const studentId = document.getElementById('studentId');
+            const infoElement = document.querySelector(`.question[data-question="0"]`);
+            
+            if (!studentName.value.trim() || !studentId.value.trim()) {
+                isComplete = false;
+                infoElement.classList.add('invalid');
+            } else {
+                infoElement.classList.remove('invalid');
+            }
+            
+            // 检查所有选择题
+            for (let i = 1; i <= 9; i++) {
+                const questionElement = document.querySelector(`.question[data-question="${i}"]`);
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                
+                if (!selectedOption) {
+                    isComplete = false;
+                    questionElement.classList.add('invalid');
+                } else {
+                    questionElement.classList.remove('invalid');
+                }
+            }
+            
+            // 检查开放型问题
+            const openQuestion = document.getElementById('openQuestion');
+            const openQuestionElement = document.querySelector(`.question[data-question="10"]`);
+            
+            if (!openQuestion.value.trim()) {
+                isComplete = false;
+                openQuestionElement.classList.add('invalid');
+            } else {
+                openQuestionElement.classList.remove('invalid');
+            }
+            
+            // 更新按钮状态
+            const submitBtn = document.getElementById('submitBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            
+            submitBtn.disabled = !isComplete;
+            exportBtn.disabled = !isComplete;
+            
+            return isComplete;
+        }
+
+        // 导出Excel表格
+        function exportToExcel() {
+            if (!checkFormComplete()) {
+                alert('请完成所有问题后再导出');
+                return;
+            }
+            
+            // 准备数据
+            const headers = ['问题', '回答'];
+            const data = [headers];
+            
+            // 添加个人信息
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            data.push(['姓名', studentName]);
+            data.push(['学号', studentId]);
+            data.push(['']); // 空行分隔
+            
+            // 添加选择题答案
+            for (let i = 1; i <= 9; i++) {
+                const questionText = document.querySelector(`.question[data-question="${i}"] .question-text`).textContent;
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`).value;
+                data.push([questionText, selectedOption]);
+            }
+            
+            // 添加开放型问题答案
+            const openQuestionText = document.querySelector(`.question[data-question="10"] .question-text`).textContent;
+            const openQuestionAnswer = document.getElementById('openQuestion').value.trim();
+            data.push([openQuestionText, openQuestionAnswer]);
+            
+            // 生成时间戳作为文件名
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `AI课程问卷_${timestamp}.csv`;
+            
+            // 导出文件
+            SheetJSExport(data, filename);
+            
+            // 显示成功消息
+            alert('问卷已成功导出！');
+        }
+
+        // 更新进度条
+        function updateProgressBar() {
+            const totalQuestions = 11;
+            let answeredQuestions = 0;
+            
+            // 检查个人信息
+            const studentName = document.getElementById('studentName');
+            const studentId = document.getElementById('studentId');
+            if (studentName.value.trim() && studentId.value.trim()) {
+                answeredQuestions++;
+            }
+            
+            // 检查选择题
+            for (let i = 1; i <= 9; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answeredQuestions++;
+                }
+            }
+            
+            // 检查开放型问题
+            if (document.getElementById('openQuestion').value.trim()) {
+                answeredQuestions++;
+            }
+            
+            // 计算百分比
+            const percentage = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        // 提交问卷数据
+        function submitSurvey() {
+            if (!checkFormComplete()) {
+                alert('请完成所有问题后再提交');
+                return;
+            }
+            
+            // 收集问卷数据
+            const surveyData = {
+                timestamp: new Date().toISOString(),
+                name: document.getElementById('studentName').value.trim(),
+                id: document.getElementById('studentId').value.trim(),
+                answers: {}
+            };
+            
+            // 收集选择题答案
+            for (let i = 1; i <= 9; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`).value;
+                surveyData.answers[`q${i}`] = selectedOption;
+            }
+            
+            // 收集开放型问题答案
+            surveyData.answers.openQuestion = document.getElementById('openQuestion').value.trim();
+            
+            // 从localStorage获取现有数据
+            let allSurveys = JSON.parse(localStorage.getItem('surveySubmissions')) || [];
+            
+            // 添加新提交的数据
+            allSurveys.push(surveyData);
+            
+            // 保存回localStorage
+            localStorage.setItem('surveySubmissions', JSON.stringify(allSurveys));
+            
+            // 显示成功消息
+            alert('问卷提交成功！');
+            
+            // 可以选择重置表单
+            // resetForm();
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('surveyForm').reset();
+            checkFormComplete();
+            updateProgressBar();
+        }
+        
+        // 生成统计结果
+        function generateStatistics() {
+            // 从localStorage获取所有提交数据
+            const allSurveys = JSON.parse(localStorage.getItem('surveySubmissions')) || [];
+            
+            if (allSurveys.length === 0) {
+                document.getElementById('statsData').innerHTML = '<p>暂无提交数据</p>';
+                return;
+            }
+            
+            // 初始化统计对象
+            const stats = {};
+            
+            // 初始化每个问题的统计
+            for (let i = 1; i <= 9; i++) {
+                stats[`q${i}`] = {};
+                // 获取问题文本
+                const questionText = document.querySelector(`.question[data-question="${i}"] .question-text`).textContent;
+                stats[`q${i}`].question = questionText;
+                stats[`q${i}`].options = {};
+            }
+            stats.openQuestion = {
+                question: document.querySelector(`.question[data-question="10"] .question-text`).textContent,
+                responses: []
+            };
+            
+            // 统计每个选项的次数
+            allSurveys.forEach(survey => {
+                for (let i = 1; i <= 9; i++) {
+                    const answer = survey.answers[`q${i}`];
+                    if (answer) {
+                        stats[`q${i}`].options[answer] = (stats[`q${i}`].options[answer] || 0) + 1;
+                    }
+                }
+                // 收集开放型问题回答
+                if (survey.answers.openQuestion) {
+                    stats.openQuestion.responses.push(survey.answers.openQuestion);
+                }
+            });
+            
+            // 生成HTML统计结果
+            let html = '';
+            
+            // 添加选择题统计
+            for (let i = 1; i <= 9; i++) {
+                const questionStats = stats[`q${i}`];
+                html += `<div class="stats-item">
+                    <div class="stats-question">问题${i}: ${questionStats.question}</div>
+                    <div class="stats-options">`;
+                
+                // 生成每个选项的统计
+                Object.entries(questionStats.options).forEach(([option, count]) => {
+                    const percentage = (count / allSurveys.length * 100).toFixed(1);
+                    html += `<div class="stats-option">
+                        <span>${option}</span>
+                        <div class="stats-bar-container">
+                            <div class="stats-bar" style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="stats-count">${count} (${percentage}%)</span>
+                    </div>`;
+                });
+                
+                html += `</div></div>`;
+            }
+            
+            // 添加开放型问题统计
+            html += `<div class="stats-item">
+                <div class="stats-question">开放型问题: ${stats.openQuestion.question}</div>
+                <div style="margin-top: 10px;">
+                    <p><strong>总回答数:</strong> ${stats.openQuestion.responses.length}</p>
+                    ${stats.openQuestion.responses.length > 0 ? 
+                        `<div style="margin-top: 10px; max-height: 300px; overflow-y: auto; padding: 10px; background: white; border-radius: 5px;">
+                            <h4>回答列表:</h4>
+                            <ol style="margin-left: 20px;">${stats.openQuestion.responses.map(resp => `<li style="margin-bottom: 8px;">${resp}</li>`).join('')}</ol>
+                        </div>` : 
+                        '<p>暂无回答</p>'
+                    }
+                </div>
+            </div>`;
+            
+            // 添加总体统计信息
+            html += `<div class="stats-item">
+                <div class="stats-question">总体统计</div>
+                <div style="margin-top: 10px;">
+                    <p><strong>总提交人数:</strong> ${allSurveys.length}</p>
+                    <p><strong>最早提交时间:</strong> ${new Date(allSurveys[0].timestamp).toLocaleString()}</p>
+                    <p><strong>最新提交时间:</strong> ${new Date(allSurveys[allSurveys.length - 1].timestamp).toLocaleString()}</p>
+                </div>
+            </div>`;
+            
+            // 更新统计结果显示
+            document.getElementById('statsData').innerHTML = html;
+        }
+        
+        // 显示统计模态框
+        function showStatistics() {
+            generateStatistics();
+            document.getElementById('statsModal').style.display = 'flex';
+        }
+        
+        // 关闭统计模态框
+        function closeStatistics() {
+            document.getElementById('statsModal').style.display = 'none';
+        }
+        
+        // 添加事件监听器
+        function addEventListeners() {
+            // 为所有单选按钮添加事件监听
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    checkFormComplete();
+                    updateProgressBar();
+                });
+            });
+            
+            // 为个人信息输入框添加事件监听
+            const studentName = document.getElementById('studentName');
+            const studentId = document.getElementById('studentId');
+            studentName.addEventListener('input', () => {
+                checkFormComplete();
+                updateProgressBar();
+            });
+            studentId.addEventListener('input', () => {
+                checkFormComplete();
+                updateProgressBar();
+            });
+            
+            // 为开放型问题添加事件监听
+            const openQuestion = document.getElementById('openQuestion');
+            openQuestion.addEventListener('input', () => {
+                checkFormComplete();
+                updateProgressBar();
+            });
+            
+            // 为提交按钮添加事件监听
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.addEventListener('click', submitSurvey);
+            
+            // 为导出按钮添加事件监听
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.addEventListener('click', exportToExcel);
+            
+            // 为统计按钮添加事件监听
+            const statsBtn = document.getElementById('statsBtn');
+            statsBtn.addEventListener('click', showStatistics);
+            
+            // 为关闭统计按钮添加事件监听
+            const closeStatsBtn = document.getElementById('closeStatsBtn');
+            closeStatsBtn.addEventListener('click', closeStatistics);
+            
+            // 点击模态框外部关闭
+            const statsModal = document.getElementById('statsModal');
+            statsModal.addEventListener('click', (e) => {
+                if (e.target === statsModal) {
+                    closeStatistics();
+                }
+            });
+            
+            // 页面滚动时更新进度条位置
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const scrollPercentage = (scrollPosition / (documentHeight - windowHeight)) * 100;
+                document.getElementById('progressBar').style.opacity = scrollPercentage > 5 ? '1' : '0.7';
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            addEventListeners();
+            updateProgressBar();
+        });
+    </script>
+</body>
+</html>
